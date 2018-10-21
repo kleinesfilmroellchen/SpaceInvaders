@@ -90,3 +90,9 @@ class Player extends Sprite {
 		}
 	}
 }
+
+class Barrier extends Sprite {
+	constructor(x, y, img) {
+		super(x, y, scale, scale, img);
+	}
+}

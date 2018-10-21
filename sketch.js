@@ -10,7 +10,7 @@ let bullets = [],
 	invaderBullets = [];
 let player;
 
-let invaderImg, spaceshipImg, bulletImg;
+let invaderImg, spaceshipImg, bulletImg, barrierImg;
 
 let frameCount = 0;
 
@@ -23,6 +23,10 @@ function preload() {
 function setup() {
 	createCanvas(windowWidth - 100, windowHeight - 100);
 	noSmooth();
+
+	//create barrier image
+	barrierImg = createImage(1, 1);
+	barrierImg.set(0, 0, color(255, 0, 255));
 
 	//create invaders
 	let invWidth = scale * invaderImg.width,
@@ -45,6 +49,7 @@ function setup() {
 }
 
 function draw() {
+
 	frameCount++;
 
 	//logic
@@ -88,6 +93,7 @@ function draw() {
 
 	//draw
 	background(0);
+
 	for (let invader of invaders) {
 		invader.draw();
 	}
