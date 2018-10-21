@@ -4,6 +4,7 @@
    "description": "Space invaders clone in JavaScript and p5.js",
    "main": "index.html",
    "scripts": {
+      "start": "serve",
       "test": "echo \"Error: no test specified\" && exit 1"
    },
    "repository": {
