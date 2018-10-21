@@ -47,17 +47,17 @@ class Invader extends Sprite {
 	constructor(x, y, width, height, img) {
 		super(x, y, width, height, img);
 		this.vel = createVector(scale, 0);
-		this.timeToShoot = floor(random(0, SHOT_PAUSE * 2));
+		this.timeToShoot = floor(random(0, SHOT_PAUSE * 5));
 	}
 
 	update(frameCount) {
-		if (frameCount % MOVE_INTERVAL == 0) {
+		if (frameCount % MOVE_INTERVAL < 1) {
 			this.pos.add(this.vel);
 		}
 		this.timeToShoot--;
 		if (this.timeToShoot <= 0) {
 			let b = createBullet(this.left() + this.width() / 2, this.lower());
-			b.vel.mult(-1);
+			b.vel.mult(-0.9);
 			invaderBullets.push(b);
 			this.timeToShoot = SHOT_PAUSE;
 		}
