@@ -1,5 +1,5 @@
 //how many frames it takes to move a space invader
-const MOVE_INTERVAL = 30;
+let MOVE_INTERVAL = 30;
 //how many frames between invader's shots
 const SHOT_PAUSE = 600;
 
@@ -13,6 +13,8 @@ let player;
 let invaderImg, spaceshipImg, bulletImg, barrierImg;
 
 let frameCount = 0;
+
+let invaderSpeed = 1;
 
 function preload() {
 	invaderImg = loadImage("invader.png");
@@ -71,6 +73,7 @@ function draw() {
 		invader.update(frameCount);
 		bullets.forEach(bullet => {
 			if (bullet.intersects(invader)) {
+				MOVE_INTERVAL--;
 				bullet.deadMarked = true;
 				invader.deadMarked = true;
 			}
@@ -124,6 +127,12 @@ function createBullet(x, y) {
 
 function gameOver() {
 	console.log("GAME OVER");
+	invaders = [];
+	bullets = [];
+	invaderBullets = [];
+	player.pos.x = width / 2;
+
+	setup();
 }
 
 const sign = n => n > 0 ? 1 : n === 0 ? 0 : -1;
