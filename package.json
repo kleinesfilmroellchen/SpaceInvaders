@@ -1,0 +1,32 @@
+{
+   "name": "spaceinvaders",
+   "version": "1.0.0",
+   "description": "Space invaders clone in JavaScript and p5.js",
+   "main": "index.html",
+   "scripts": {
+      "start": "serve",
+      "test": "echo \"Error: no test specified\" && exit 1"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/kleinesfilmroellchen/SpaceInvaders.git"
+   },
+   "keywords": [
+      "Space",
+      "Invaders",
+      "Clone",
+      "p5.js",
+      "JavaScript",
+      "Retro",
+      "Arcade"
+   ],
+   "author": "kleinesfilmroellchen",
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/kleinesfilmroellchen/SpaceInvaders/issues"
+   },
+   "homepage": "https://github.com/kleinesfilmroellchen/SpaceInvaders#readme",
+   "dependencies": {
+      "serve": "^10.0.2"
+   }
+}
