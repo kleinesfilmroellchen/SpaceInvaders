@@ -2,6 +2,8 @@
 let MOVE_INTERVAL = 30;
 //how many frames between invader's shots
 const SHOT_PAUSE = 300;
+//how long the player is invincible after hit
+const PLAYER_INVINCIBLE = 60 * 2 - 20;
 const scale = 3;
 
 let invaders = [];
@@ -15,7 +17,7 @@ let invaderFont;
 let frameCount = 0;
 let invaderSpeed = 1;
 
-let playerLives, score, win;
+let playerLives, score, win, streak;
 
 function preload() {
 	invaderImg = loadImage("invader.png");
@@ -58,7 +60,7 @@ function setup() {
 	player = new Player(width / 2, height - spaceshipImg.height * scale, spaceshipImg.width * scale, spaceshipImg.height * scale, spaceshipImg);
 
 	playerLives = 2;
-	score = 0;
+	score = streak = 0;
 	win = false;
 
 	MOVE_INTERVAL = 30;
@@ -69,6 +71,7 @@ function setup() {
 function draw() {
 
 	frameCount++;
+	streak = max(streak - 0.02, 0);
 
 	//logic
 	if (keyIsDown(LEFT_ARROW)) {
@@ -76,11 +79,11 @@ function draw() {
 	} else if (keyIsDown(RIGHT_ARROW)) {
 		player.move(scale);
 	}
-	player.update();
+	player.update(frameCount);
 
 	for (let bullet of invaderBullets) {
 		bullet.update(frameCount);
-		if (player.intersects(bullet)) {
+		if (!player.invincible && player.intersects(bullet)) {
 			bullet.deadMarked = true;
 			gameOver();
 		}
@@ -90,9 +93,9 @@ function draw() {
 		invader.update(frameCount);
 		bullets.forEach(bullet => {
 			if (bullet.intersects(invader)) {
-				score += floor((1 / MOVE_INTERVAL) * 300);
+				score += floor((1 / MOVE_INTERVAL) * 300 * streak);
+				streak += 1;
 				if (invader.img === invader2Img) score += 10;
-				console.log(MOVE_INTERVAL);
 				MOVE_INTERVAL -= 0.1;
 				bullet.deadMarked = true;
 				invader.deadMarked = true;
@@ -134,12 +137,12 @@ function draw() {
 
 	noStroke();
 	fill(255);
-	textSize(32);
+	textSize(28);
 	textAlign(LEFT, TOP);
-	text(`Lives: ${playerLives}`, 0, 0);
+	text(`Lives ${playerLives}\nStreak ${round(streak*10)/10}`, 0, 0);
 	textAlign(RIGHT, TOP);
 	fill(win ? 0 : 255, 255, win ? 0 : 255)
-	text(score, width, 0);
+	text(`${score}\nHi ${hs()}`, width, 0);
 
 	if (playerLives < 0) {
 		textAlign(CENTER, CENTER);
@@ -148,9 +151,20 @@ function draw() {
 	}
 
 	if (win) {
+		//score logic and storing highscore in cookie
+		score += playerLives * 100;
+		if (score > hs()) {
+			setHs(score);
+		}
+
+		textAlign(RIGHT, TOP);
+		fill(win ? 0 : 255, 255, win ? 0 : 255)
+		text(`${score}\nHi ${hs()}`, width, 0);
+
 		textAlign(CENTER, CENTER);
 		textSize(64);
 		text("YOU WIN", width / 2, height / 2);
+
 		noLoop();
 	}
 }
@@ -158,6 +172,10 @@ function draw() {
 function keyPressed() {
 	if (keyCode === UP_ARROW) {
 		player.shoot();
+	}
+
+	if (key === 'r') {
+		restart();
 	}
 }
 
@@ -173,20 +191,31 @@ function createBullet(x, y) {
 
 function gameOver() {
 	playerLives--;
+	//make player invincible
+	player.invincible = true;
+
 	if (playerLives < 0) {
 		console.log("GAME OVER");
-		redraw();
-		noLoop();
-
-		setTimeout(() => {
-			invaders = [];
-			bullets = [];
-			invaderBullets = [];
-			player.pos.x = width / 2;
-
-			setup();
-		}, 3000);
+		restart();
 	}
 }
+
+function restart() {
+	redraw();
+	noLoop();
+
+	setTimeout(() => {
+		invaders = [];
+		bullets = [];
+		invaderBullets = [];
+		player.pos.x = width / 2;
+
+		setup();
+	}, 3000);
+}
+
+//returns high score read from browser cookie. That's not a bad cookie!
+const hs = () => document.cookie.replace(/(?:(?:^|.*;\s*)highscore\s*\=\s*([^;]*).*$)|^.*$/, '$1');
+const setHs = val => document.cookie = `highscore=${val}`;
 
 const sign = n => n > 0 ? 1 : n === 0 ? 0 : -1;

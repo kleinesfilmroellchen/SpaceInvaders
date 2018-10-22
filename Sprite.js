@@ -71,11 +71,14 @@ class Player extends Sprite {
 		this.vel = createVector(scale / 2, 0);
 		this.timeBetweenShots = 20;
 		this.shootCooldown = 0;
-
+		this.invincibleCounter = 0;
+		this.visible = true;
 	}
 
 	update(frameCount) {
 		this.shootCooldown--;
+		this.invincibleCounter--;
+		this.visible = this.invincible ? frameCount % 20 >= 20 / 2 : true;
 	}
 
 	move(dir) {
@@ -88,6 +91,18 @@ class Player extends Sprite {
 			bullets.push(b);
 			this.shootCooldown = this.timeBetweenShots;
 		}
+	}
+
+	get invincible() {
+		return this.invincibleCounter > 0;
+	}
+	set invincible(inv) {
+		this.invincibleCounter = inv ? PLAYER_INVINCIBLE : 0;
+	}
+
+	draw() {
+		if (!this.visible) return;
+		else super.draw();
 	}
 }
 
